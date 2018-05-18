@@ -13,16 +13,53 @@ namespace space_invaders
     public partial class GameWindow : Form
     {
         GameInstance game;
-        
+        bool goleft;
+        bool goright;
+        bool isPressed;
 
         public GameWindow()
         {
+            this.KeyPreview = true;
+
             InitializeComponent();
             game = new GameInstance(20, 20, 2, 4);
             int n = game.GetEnemies().Count;
             for (int i=1; i<n; i++)
             {
                 createEnemy(i);
+            }
+        }
+
+        private void keyisup(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left)
+            {
+                goleft = false;
+            }
+            if (e.KeyCode == Keys.Right)
+            {
+                goright = false;
+            }
+            if (isPressed)
+            {
+                isPressed = false;
+            }
+        }
+
+        private void keyisdown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Left)
+            {
+                goleft = true;
+            }
+
+            if (e.KeyCode == Keys.Right)
+            {
+                goright = true;
+            }
+            if (e.KeyCode == Keys.Space && !isPressed)
+            {
+                isPressed = true;
             }
         }
 
@@ -40,18 +77,21 @@ namespace space_invaders
             this.Controls.Add(picture);
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
-            game.Update(false, false, false);
+            game.Update(goleft, goright, isPressed);
             List<Enemy> en = game.GetEnemies();
             int count = 0;
             foreach (Control c in this.Controls)
             {
+                if (c is PictureBox && (string)c.Tag == "player")
+                {
+                    int x, y;
+                    game.GetPlayerPos(out x, out y);
+                    ((PictureBox)c).Top = ((PictureBox)c).Height * y;
+                    ((PictureBox)c).Left = ((PictureBox)c).Width * x;
+                }
+
                 if (c is PictureBox && (string)c.Tag == "invader")
                 {
                     if (count >= en.Count)

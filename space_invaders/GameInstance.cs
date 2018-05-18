@@ -11,7 +11,6 @@ namespace space_invaders
         private int screenLines;
         private int screenCols;
         private EnemyController EnemySystem;
-        private int nEnemies;
         private Player player;
 
         public GameInstance(int screenLines, int screenCols, int enemyLines, int margin)
@@ -19,12 +18,13 @@ namespace space_invaders
             this.screenLines = screenLines;
             this.screenCols = screenCols;
             EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin);
-            player = new Player(screenCols/2, screenLines-1, 3);
+            player = new Player(screenCols/2, screenLines-1, screenCols, 3);
         }
 
         public void Update(bool Left, bool Right, bool shoot)
         {
             EnemySystem.Update();
+            player.Update(Left, Right, shoot);
         }
 
         public List<Enemy> GetEnemies()
@@ -60,23 +60,31 @@ namespace space_invaders
     {
         int refresh_time;
         int current_time;
+        int screenCols;
 
-        public Player(int y, int x, int refreshTime) : base(x,y)
+        public Player(int x, int y, int screenCols, int refreshTime) : base(x, y)
         {
             refresh_time = refreshTime;
             current_time = 0;
+            this.screenCols = screenCols;
         }
 
         public void Update(bool left, bool right, bool shoot)
         {
-            if (right && !left)
+            current_time--;
+            if (right && !left && x < screenCols)
             {
                 x++;
             }
 
-            if (!right && left)
+            if (left && !right && x > 0)
             {
                 x--;
+            }
+
+            if (shoot && current_time <= 0)
+            {
+                current_time = refresh_time;
             }
         }
     }
@@ -117,7 +125,6 @@ namespace space_invaders
 
         public void Move(int _x, int _y)
         {
-            System.Console.WriteLine("moved");
             x += _x;
             y += _y;
             timeToShoot--;
