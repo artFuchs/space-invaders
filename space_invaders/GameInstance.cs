@@ -12,6 +12,7 @@ namespace space_invaders
         private int screenCols;
         private EnemyController EnemySystem;
         private Player player;
+        private List<Bullet> bullets;
 
         public GameInstance(int screenLines, int screenCols, int enemyLines, int margin)
         {
@@ -19,12 +20,31 @@ namespace space_invaders
             this.screenCols = screenCols;
             EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin);
             player = new Player(screenCols/2, screenLines-1, screenCols, 3);
+            bullets = new List<Bullet>();
         }
 
         public void Update(bool Left, bool Right, bool shoot)
         {
+            //update movements
             EnemySystem.Update();
             player.Update(Left, Right, shoot);
+            foreach (Bullet b in bullets)
+            {
+                b.Update();
+            }
+
+            if (shoot)
+                bullets.Add(player.getShoot());
+
+            //check collisions
+            for (int i=0; i<bullets.Count; i++)
+            {
+                if (EnemySystem.check_collisions(bullets[i]))
+                {
+                    bullets.RemoveAt(i);
+                    i--;
+                }   
+            }
         }
 
         public List<Enemy> GetEnemies()
@@ -36,6 +56,12 @@ namespace space_invaders
         {
             player.GetPos(out x, out y);
         }
+
+        public List<Bullet> GetBullets()
+        {
+            return bullets;
+        }
+
     }
 
     class GameObject
@@ -61,6 +87,7 @@ namespace space_invaders
         int refresh_time;
         int current_time;
         int screenCols;
+        Bullet shoot;
 
         public Player(int x, int y, int screenCols, int refreshTime) : base(x, y)
         {
@@ -84,8 +111,14 @@ namespace space_invaders
 
             if (shoot && current_time <= 0)
             {
+                this.shoot = new Bullet(x,y-1,false,0);
                 current_time = refresh_time;
             }
+        }
+
+        public Bullet getShoot()
+        {
+            return shoot;
         }
     }
 
@@ -136,11 +169,6 @@ namespace space_invaders
         {
             //shoot!!!!!
             timeToShoot = rdm.Next(maxTimeShoot);
-        }
-
-        public void Destroy()
-        {
-            // explosion here
         }
     }
 
@@ -212,6 +240,26 @@ namespace space_invaders
                     e.Move(1, 0);
                 }
             }
+        }
+
+        public bool check_collisions(Bullet b)
+        {
+            int bx, by;
+            b.GetPos(out bx, out by);
+
+            foreach (Enemy e in Enemies)
+            {
+                int ex, ey;
+                e.GetPos(out ex, out ey);
+
+                if (bx == ex && by == ey)
+                {
+                    Enemies.Remove(e);
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public List<Enemy> GetEnemies()

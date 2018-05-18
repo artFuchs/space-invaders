@@ -159,6 +159,13 @@
         GBa60OxJutDsP/7+/AWzzv/mRhLV5QAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="bullet.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAAUAAAAUCAYAAABF5ffbAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1
+        MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAADsIAAA7CARUoSoAAAAAUSURBVChTY/iPBYwKooGBFPz/
+        HwDsno6Ar4l+2QAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="$this.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAyAAAAHBCAYAAACR999mAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1
