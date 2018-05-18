@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ namespace space_invaders
         private int screenLines;
         private int screenCols;
         private EnemyController EnemySystem;
-        private List<Enemy> Enemies;
         private Player player;
 
 
@@ -21,18 +19,22 @@ namespace space_invaders
             this.screenLines = screenLines;
             this.screenCols = screenCols;
             EnemySystem = new EnemyController(5, this.screenCols, this.screenLines, 4);
-            player = new Player();
+            player = new Player(screenCols/2, screenLines-1, 3);
         }
 
         public void Update(bool Left, bool Right, bool shoot)
         {
             EnemySystem.Update();
-            Enemies = EnemySystem.GetEnemies();
         }
 
         public List<Enemy> GetEnemies()
         {
-            return this.Enemies;
+            return EnemySystem.GetEnemies();
+        }
+
+        public void GetPlayerPos(out int x, out int y)
+        {
+            player.GetPos(out x, out y);
         }
     }
 
@@ -40,6 +42,12 @@ namespace space_invaders
     {
         protected int x;
         protected int y;
+
+        public GameObject(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
 
         public void GetPos(out int x, out int y)
         {
@@ -50,22 +58,58 @@ namespace space_invaders
 
     class Player : GameObject
     {
-        
+        int refresh_time;
+        int current_time;
+
+        public Player(int y, int x, int refreshTime) : base(x,y)
+        {
+            refresh_time = refreshTime;
+            current_time = 0;
+        }
+
+        public void Update(bool left, bool right, bool shoot)
+        {
+            if (right && !left)
+            {
+                x++;
+            }
+
+            if (!right && left)
+            {
+                x--;
+            }
+        }
+    }
+
+    class Bullet : GameObject
+    {
+        private bool enemyBullet;
+
+        public Bullet(int x, int y, bool enemy, int limit) : base(x,y)
+        {
+            enemyBullet = enemy;
+        }
+
+        public void Update()
+        {
+            if (enemyBullet)
+            {
+                y++;
+            }
+            else
+                y--;
+        }
     }
      
     class Enemy: GameObject
     {
-        private int x;
-        private int y;
         private int timeToShoot;
         private readonly int maxTimeShoot;
         private Random rdm;
 
 
-        public Enemy(int _x, int _y, int _maxTimeShoot)
+        public Enemy(int x, int y, int _maxTimeShoot) : base(x,y)
         {
-            x = _x;
-            y = _y;
             maxTimeShoot = _maxTimeShoot;
             rdm = new Random();
             timeToShoot = rdm.Next(maxTimeShoot);
@@ -79,8 +123,6 @@ namespace space_invaders
             if (timeToShoot <= 0)
                 Shoot();
         }
-
-        
 
         private void Shoot()
         {
@@ -116,11 +158,11 @@ namespace space_invaders
             nEnemies = 0;
             Enemies = new List<Enemy>();
 
-            for (int i = 0; i < nLines; i++)
+            for (int i = 1; i < nLines; i++)
             {
-                for (int j = margin; j < screenCols - margin; j++)
+                for (int j = margin; j < screenCols - margin; j+=2)
                 {
-                    Enemies.Add(new Enemy(i + 1, j + 1, 20));
+                    Enemies.Add(new Enemy(i, j, 20));
                     nEnemies++;
                 }
             }
