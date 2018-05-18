@@ -8,25 +8,51 @@ namespace space_invaders
 {
     class GameInstance
     {
+        //screen_information
         private int screenLines;
         private int screenCols;
+
+        //ObjectControl
         private EnemyController EnemySystem;
         private Player player;
         private List<Bullet> bullets;
 
-        public GameInstance(int screenLines, int screenCols, int enemyLines, int margin)
+        //gameStatus
+        private bool game_over;
+
+        //Default Constructor
+        public GameInstance()
+        {
+            screenLines = 20;
+            screenCols = 20;
+            EnemySystem = new EnemyController(2, this.screenCols, this.screenLines, 4);
+            player = new Player(screenCols / 2, screenLines - 1, screenCols, 3);
+            bullets = new List<Bullet>();
+            game_over = false;
+        }
+
+        //Alternative Constructor
+        public GameInstance(int screenLines, int screenCols, int enemyLines, int margin, int assetsW = 1, int assetsH = 1)
         {
             this.screenLines = screenLines;
             this.screenCols = screenCols;
             EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin);
             player = new Player(screenCols/2, screenLines-1, screenCols, 3);
             bullets = new List<Bullet>();
+            game_over = false;
         }
 
         public void Update(bool Left, bool Right, bool shoot)
         {
+            if (game_over)
+                return;
             //update movements
             EnemySystem.Update();
+            if (EnemySystem.isEnd())
+            {
+                game_over = true;
+                return;
+            }
             player.Update(Left, Right, shoot);
             foreach (Bullet b in bullets)
             {
@@ -43,10 +69,13 @@ namespace space_invaders
                 {
                     bullets.RemoveAt(i);
                     i--;
-                }   
+                 }   
             }
+
+            
         }
 
+        //get GameObjects informations to draw on screen
         public List<Enemy> GetEnemies()
         {
             return EnemySystem.GetEnemies();
@@ -62,6 +91,11 @@ namespace space_invaders
             return bullets;
         }
 
+        //get game Status
+        public bool isGameOver()
+        {
+            return game_over;
+        }
     }
 
     class GameObject
@@ -184,6 +218,7 @@ namespace space_invaders
         private bool down;
         //screenInfo
         private int screenCols, screenLines;
+        private bool gotToBottom;
 
         public EnemyController(int nLines, int screenCols, int screenLines, int margin)
         {
@@ -202,10 +237,15 @@ namespace space_invaders
                     nEnemies++;
                 }
             }
+
+            gotToBottom = false;
         }
 
         public void Update()
         {
+            if (gotToBottom)
+                return;
+
             if (down == false)
             {
                 foreach (Enemy e in Enemies)
@@ -217,6 +257,10 @@ namespace space_invaders
                         left = !left;
                         down = true;
                         break;
+                    }
+                    if (y == screenLines-1)
+                    {
+                        gotToBottom = true;
                     }
                 }
             }
@@ -265,6 +309,11 @@ namespace space_invaders
         public List<Enemy> GetEnemies()
         {
             return this.Enemies;
+        }
+
+        public bool isEnd()
+        {
+            return gotToBottom;
         }
     }
 }

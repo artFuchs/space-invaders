@@ -35,6 +35,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bullet = new System.Windows.Forms.PictureBox();
+            this.GameOverLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.invader)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bullet)).BeginInit();
@@ -89,6 +90,17 @@
             this.bullet.TabStop = false;
             this.bullet.Tag = "bullet";
             // 
+            // GameOverLabel
+            // 
+            this.GameOverLabel.AutoSize = true;
+            this.GameOverLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GameOverLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.GameOverLabel.Location = new System.Drawing.Point(178, 191);
+            this.GameOverLabel.Name = "GameOverLabel";
+            this.GameOverLabel.Size = new System.Drawing.Size(204, 73);
+            this.GameOverLabel.TabIndex = 5;
+            this.GameOverLabel.Text = "label1";
+            // 
             // GameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -97,6 +109,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(673, 494);
+            this.Controls.Add(this.GameOverLabel);
             this.Controls.Add(this.bullet);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
@@ -120,6 +133,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox bullet;
+        private System.Windows.Forms.Label GameOverLabel;
     }
 }
 

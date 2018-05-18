@@ -28,8 +28,11 @@ namespace space_invaders
             {
                 createEnemy(i);
             }
+
+            GameOverLabel.Text = "";
         }
 
+        //Create assets to draw
         private void createEnemy(int count)
         {
             PictureBox picture = new PictureBox()
@@ -44,6 +47,7 @@ namespace space_invaders
             this.Controls.Add(picture);
         }
 
+        //
         private void createBullet(int count, int x, int y)
         {
             PictureBox picture = new PictureBox()
@@ -58,6 +62,7 @@ namespace space_invaders
             this.Controls.Add(picture);
         }
 
+        //Handle Input and pass to the game
         private void keyisup(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Left)
@@ -95,6 +100,11 @@ namespace space_invaders
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (game.isGameOver())
+            {
+                GameOverLabel.Text = "GAME OVER";
+                return;
+            }
             game.Update(goleft, goright, isPressed);
             List<Enemy> en = game.GetEnemies();
             List<Bullet> bull = game.GetBullets();
