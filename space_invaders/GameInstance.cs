@@ -14,11 +14,11 @@ namespace space_invaders
         private int nEnemies;
         private Player player;
 
-        public GameInstance(int screenLines, int screenCols, int enemyLines)
+        public GameInstance(int screenLines, int screenCols, int enemyLines, int margin)
         {
             this.screenLines = screenLines;
             this.screenCols = screenCols;
-            EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, 4);
+            EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin);
             player = new Player(screenCols/2, screenLines-1, 3);
         }
 
@@ -177,7 +177,7 @@ namespace space_invaders
                 {
                     int x, y;
                     e.GetPos(out x, out y);
-                    if (x == 0 || x == screenCols)
+                    if (x == 1 || x == screenCols-1)
                     {
                         left = !left;
                         down = true;

@@ -18,7 +18,7 @@ namespace space_invaders
         public GameWindow()
         {
             InitializeComponent();
-            game = new GameInstance(20, 20, 2);
+            game = new GameInstance(20, 20, 2, 4);
             int n = game.GetEnemies().Count;
             for (int i=1; i<n; i++)
             {
