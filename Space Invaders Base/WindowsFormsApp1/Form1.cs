@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace WindowsFormsApp1
 {
@@ -20,9 +21,13 @@ namespace WindowsFormsApp1
         int totalEnemies = 12;
         int playerSpeed = 6;
 
+        private SoundPlayer soundPlayer;
+
         public Form1()
         {
             InitializeComponent();
+            soundPlayer = new SoundPlayer(@"C:\Users\Personal\Documents\GitHub\space-invaders\Space Invaders Base\WindowsFormsApp1\Sounds\BGM.wav");
+            soundPlayer.Play();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -145,5 +150,6 @@ namespace WindowsFormsApp1
             timer1.Stop();
             label1.Text += "GAME OVER MAN";
         }
+
     }
 }
