@@ -44,6 +44,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.player = new System.Windows.Forms.PictureBox();
+            this.BGM_button = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox12)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox11)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
@@ -232,6 +233,19 @@
             this.player.TabIndex = 0;
             this.player.TabStop = false;
             // 
+            // BGM_button
+            // 
+            this.BGM_button.Appearance = System.Windows.Forms.Appearance.Button;
+            this.BGM_button.BackColor = System.Drawing.Color.Transparent;
+            this.BGM_button.Location = new System.Drawing.Point(596, 425);
+            this.BGM_button.Name = "BGM_button";
+            this.BGM_button.Size = new System.Drawing.Size(76, 24);
+            this.BGM_button.TabIndex = 15;
+            this.BGM_button.Text = "Play Music";
+            this.BGM_button.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.BGM_button.UseVisualStyleBackColor = false;
+            this.BGM_button.CheckedChanged += new System.EventHandler(this.BGM_button_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -240,6 +254,7 @@
             this.BackgroundImage = global::WindowsFormsApp1.Properties.Resources.background;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(684, 461);
+            this.Controls.Add(this.BGM_button);
             this.Controls.Add(this.pictureBox12);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox11);
@@ -294,6 +309,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox pictureBox12;
+        private System.Windows.Forms.CheckBox BGM_button;
     }
 }
 
