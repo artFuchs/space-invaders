@@ -11,14 +11,14 @@ namespace space_invaders
         private int screenLines;
         private int screenCols;
         private EnemyController EnemySystem;
+        private int nEnemies;
         private Player player;
 
-
-        public GameInstance(int screenLines, int screenCols)
+        public GameInstance(int screenLines, int screenCols, int enemyLines)
         {
             this.screenLines = screenLines;
             this.screenCols = screenCols;
-            EnemySystem = new EnemyController(5, this.screenCols, this.screenLines, 4);
+            EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, 4);
             player = new Player(screenCols/2, screenLines-1, 3);
         }
 
@@ -117,6 +117,7 @@ namespace space_invaders
 
         public void Move(int _x, int _y)
         {
+            System.Console.WriteLine("moved");
             x += _x;
             y += _y;
             timeToShoot--;
@@ -158,11 +159,11 @@ namespace space_invaders
             nEnemies = 0;
             Enemies = new List<Enemy>();
 
-            for (int i = 1; i < nLines; i++)
+            for (int i = 0; i < nLines; i++)
             {
                 for (int j = margin; j < screenCols - margin; j+=2)
                 {
-                    Enemies.Add(new Enemy(i, j, 20));
+                    Enemies.Add(new Enemy(j, i, 20));
                     nEnemies++;
                 }
             }
@@ -170,16 +171,23 @@ namespace space_invaders
 
         public void Update()
         {
-            foreach (Enemy e in Enemies)
+            if (down == false)
             {
-                int x, y;
-                e.GetPos(out x, out y);
-                if (x == 0 || x == screenCols)
+                foreach (Enemy e in Enemies)
                 {
-                    left = !left;
-                    down = true;
-                    break;
+                    int x, y;
+                    e.GetPos(out x, out y);
+                    if (x == 0 || x == screenCols)
+                    {
+                        left = !left;
+                        down = true;
+                        break;
+                    }
                 }
+            }
+            else
+            {
+                down = false;
             }
 
             foreach (Enemy e in Enemies)
@@ -197,8 +205,6 @@ namespace space_invaders
                     e.Move(1, 0);
                 }
             }
-
-            down = false;
         }
 
         public List<Enemy> GetEnemies()
