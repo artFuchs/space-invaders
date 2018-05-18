@@ -27,6 +27,7 @@ namespace WindowsFormsApp1
         {
             InitializeComponent();
             soundPlayer = new SoundPlayer(@"C:\Users\Personal\Documents\GitHub\space-invaders\Space Invaders Base\WindowsFormsApp1\Sounds\BGM.wav");
+            soundPlayer.Play();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -150,18 +151,5 @@ namespace WindowsFormsApp1
             label1.Text += "GAME OVER MAN";
         }
 
-        private void BGM_button_CheckedChanged(object sender, EventArgs e)
-        {
-            if (BGM_button.Checked)
-            {
-                BGM_button.Text = "Stop Music";
-                soundPlayer.Play();
-            }
-            else
-            {
-                BGM_button.Text = "Play Music";
-                soundPlayer.Stop();
-            }
-        }
     }
 }
