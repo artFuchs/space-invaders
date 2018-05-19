@@ -40,18 +40,5 @@ namespace space_invaders.core
         {
             return H;
         }
-
-        public void ChangeSize(int W, int H)
-        {
-            if (W >= 0)
-            {
-                this.W = W;
-            }
-
-            if (H >= 0)
-            {
-                this.H = H;
-            }
-        }
     }
 }

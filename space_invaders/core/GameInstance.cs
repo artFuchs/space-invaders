@@ -22,20 +22,6 @@ namespace space_invaders.core
         //assets information
         private Size baseSize;
 
-        //Default Constructor - create a instance of the game where
-        public GameInstance()
-        {
-            screenSize = new Size(20, 20);
-            EnemySystem = new EnemyController(2, screenSize, 4);
-            int SW = screenSize.GetW();
-            int SH = screenSize.GetH();
-            player = new Player(SW/2, SH-1, SW, 3);
-            bullets = new List<Bullet>();
-            game_over = false;
-            baseSize = new Size(0, 0);
-        }
-
-        //Alternative Constructor - custon instance
         public GameInstance(Size screenSize, int enemyLines, int margin, Size assetsSize, Size bulletSize = null, int playerVel = 1)
         {
             this.screenSize = new Size(screenSize);
@@ -203,7 +189,6 @@ namespace space_invaders.core
         private int screenCols;
         private Bullet shoot;
         private Size bSize;
-        private Size size;
         private int vel;
 
         public Player(int x, int y, int screen_limit, int refreshTime, Size playerSize = null, int vel = 1, Size bSize = null) : base(x, y)
@@ -233,7 +218,7 @@ namespace space_invaders.core
             if (shoot && current_time <= 0)
             {
 
-                this.shoot = new Bullet(x + size.GetW()/2 - bSize.GetW() , y - size.GetH(), bSize, bSize.GetH());
+                this.shoot = new Bullet(x + (size.GetW() - bSize.GetW())/2 , y - size.GetH(), bSize, bSize.GetH());
                 current_time = refresh_time;
             }
         }
