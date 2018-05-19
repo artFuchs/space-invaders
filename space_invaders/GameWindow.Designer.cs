@@ -108,7 +108,7 @@
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(673, 494);
+            this.ClientSize = new System.Drawing.Size(673, 518);
             this.Controls.Add(this.GameOverLabel);
             this.Controls.Add(this.bullet);
             this.Controls.Add(this.pictureBox1);

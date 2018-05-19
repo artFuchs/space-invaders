@@ -47,7 +47,7 @@ namespace space_invaders
             this.screenLines = screenLines;
             this.screenCols = screenCols;
             EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin, assetsW, assetsH, 5);
-            player = new Player(screenCols/2, screenLines-32, screenCols, 20, bulletW, bulletW, playerVel);
+            player = new Player(screenCols/2, screenLines-assetsH, screenCols, 20, bulletW, bulletH, playerVel);
             bullets = new List<Bullet>();
             game_over = false;
             W_base = assetsW;
@@ -170,7 +170,7 @@ namespace space_invaders
         {
             int _x, _y, _W, _H;
             other.GetPos(out _x, out _y);
-            other.GetPos(out _W, out _H);
+            other.GetSize(out _W, out _H);
             bool collide = false;
 
             if (x == _x && y == _y)
@@ -180,12 +180,9 @@ namespace space_invaders
 
             if (!collide && W > 0 && H > 0)
             {
-                if ((_x >= x && _x <= x + W) || (x >= _x && x <= _x + _W))
+                if ((x + W >= _x) && (x <= _x + _W) && (y + H >= _y) && (y <= _y + _H))
                 {
-                    if ((_y >= y && _y <= y + H) || (y >= _y && y <= _y + _H))
-                    {
                         collide = true;
-                    }
                 }
             }
 
@@ -227,7 +224,7 @@ namespace space_invaders
 
             if (shoot && current_time <= 0)
             {
-                this.shoot = new Bullet(x+bW,y-bH,bW,bH+1,bH+1);
+                this.shoot = new Bullet(x+bW,y-bH,bW,bH,bH+1);
                 current_time = refresh_time;
             }
         }
@@ -381,7 +378,7 @@ namespace space_invaders
                         down = true;
                         break;
                     }
-                    if (y == screenLines-H)
+                    if (y >= screenLines-H)
                     {
                         gotToBottom = true;
                     }
