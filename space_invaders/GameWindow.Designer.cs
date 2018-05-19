@@ -44,7 +44,7 @@
             // timer1
             // 
             this.timer1.Enabled = true;
-            this.timer1.Interval = 200;
+            this.timer1.Interval = 30;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // invader
@@ -84,7 +84,7 @@
             this.bullet.Image = ((System.Drawing.Image)(resources.GetObject("bullet.Image")));
             this.bullet.Location = new System.Drawing.Point(593, 400);
             this.bullet.Name = "bullet";
-            this.bullet.Size = new System.Drawing.Size(32, 24);
+            this.bullet.Size = new System.Drawing.Size(10, 24);
             this.bullet.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.bullet.TabIndex = 4;
             this.bullet.TabStop = false;

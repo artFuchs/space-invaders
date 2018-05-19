@@ -22,7 +22,7 @@ namespace space_invaders
             this.KeyPreview = true;
 
             InitializeComponent();
-            game = new GameInstance(20, 20, 2, 4);
+            game = new GameInstance(500, 640, 2, 64, 32, 24, 10, 24, 10);
             int n = game.GetEnemies().Count;
             for (int i=1; i<n; i++)
             {
@@ -102,7 +102,10 @@ namespace space_invaders
         {
             if (game.isGameOver())
             {
-                GameOverLabel.Text = "GAME OVER";
+                if (game.GetEnemies().Count==0)
+                    GameOverLabel.Text = "YOU WIN";
+                else
+                    GameOverLabel.Text = "GAME OVER";
                 return;
             }
             game.Update(goleft, goright, isPressed);
@@ -110,14 +113,15 @@ namespace space_invaders
             List<Bullet> bull = game.GetBullets();
             int Ecount = 0;
             int Bcount = 0;
+
             foreach (Control c in this.Controls)
             {
                 if (c is PictureBox && (string)c.Tag == "player")
                 {
                     int x, y;
                     game.GetPlayerPos(out x, out y);
-                    ((PictureBox)c).Top = ((PictureBox)c).Height * y;
-                    ((PictureBox)c).Left = ((PictureBox)c).Width * x;
+                    ((PictureBox)c).Top = y; //((PictureBox)c).Height * y;
+                    ((PictureBox)c).Left = x; // ((PictureBox)c).Width * x;
                 }
 
                 if (c is PictureBox && (string)c.Tag == "invader")
@@ -132,8 +136,8 @@ namespace space_invaders
                     }
                     int x, y;
                     en[Ecount].GetPos(out x, out y);
-                    ((PictureBox)c).Top = ((PictureBox)c).Height * y;
-                    ((PictureBox)c).Left = ((PictureBox)c).Width * x;
+                    ((PictureBox)c).Top = y; // ((PictureBox)c).Height * y;
+                    ((PictureBox)c).Left = x; // ((PictureBox)c).Width * x;
                     Ecount++;
                 }
 
@@ -143,8 +147,8 @@ namespace space_invaders
                     {
                         int x, y;
                         bull[Bcount].GetPos(out x, out y);
-                        ((PictureBox)c).Top = ((PictureBox)c).Height * y;
-                        ((PictureBox)c).Left = ((PictureBox)c).Width * x;
+                        ((PictureBox)c).Top = y; // ((PictureBox)c).Height * y;
+                        ((PictureBox)c).Left = x; // ((PictureBox)c).Width * x;
                         Bcount++;
                     }
                     else

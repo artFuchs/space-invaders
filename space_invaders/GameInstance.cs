@@ -20,6 +20,12 @@ namespace space_invaders
         //gameStatus
         private bool game_over;
 
+        //assets information
+        private int W_base;
+        private int H_base;
+        private int H_bullet;
+        private int W_bullet;
+
         //Default Constructor
         public GameInstance()
         {
@@ -29,50 +35,84 @@ namespace space_invaders
             player = new Player(screenCols / 2, screenLines - 1, screenCols, 3);
             bullets = new List<Bullet>();
             game_over = false;
+            W_base = 0;
+            H_base = 0;
+            W_bullet = 0;
+            H_bullet = 0;
         }
 
         //Alternative Constructor
-        public GameInstance(int screenLines, int screenCols, int enemyLines, int margin, int assetsW = 1, int assetsH = 1)
+        public GameInstance(int screenLines, int screenCols, int enemyLines, int margin, int assetsW=0, int assetsH=0, int bulletW = 0, int bulletH = 0, int playerVel = 1)
         {
             this.screenLines = screenLines;
             this.screenCols = screenCols;
-            EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin);
-            player = new Player(screenCols/2, screenLines-1, screenCols, 3);
+            EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin, assetsW, assetsH, 5);
+            player = new Player(screenCols/2, screenLines-32, screenCols, 20, bulletW, bulletW, playerVel);
             bullets = new List<Bullet>();
             game_over = false;
+            W_base = assetsW;
+            H_base = assetsH;
+            W_bullet = bulletW;
+            H_bullet = bulletH;
         }
 
         public void Update(bool Left, bool Right, bool shoot)
         {
             if (game_over)
                 return;
-            //update movements
+
+            //update objects
             EnemySystem.Update();
-            if (EnemySystem.isEnd())
-            {
-                game_over = true;
-                return;
-            }
             player.Update(Left, Right, shoot);
             foreach (Bullet b in bullets)
             {
                 b.Update();
             }
-
             if (shoot)
-                bullets.Add(player.getShoot());
-
-            //check collisions
-            for (int i=0; i<bullets.Count; i++)
             {
-                if (EnemySystem.check_collisions(bullets[i]))
-                {
-                    bullets.RemoveAt(i);
-                    i--;
-                 }   
+                Bullet b = player.getShoot();
+                if (b!= null)
+                    bullets.Add(b);
             }
 
-            
+
+            List<Bullet> to_remove = new List<Bullet>();
+            //check collisions and remove bullets
+            foreach (Bullet b in bullets)
+            {
+                bool outS = false;
+                //check if bullet is out of screen
+                b.GetPos(out int x, out int y);
+                if (y > screenLines || y < 0)
+                {
+                    to_remove.Add(b);
+                    outS = true;
+                }
+                //if not, check if it collide with some enemies
+                if (!outS)
+                {
+                    if (EnemySystem.check_collisions(b))
+                    {
+                        to_remove.Add(b);
+                    }
+                } 
+            }
+            foreach (Bullet b in to_remove)
+            {
+                bullets.Remove(b);
+            }
+
+            //if enemies reached the botton of the screen, GAMEOVER
+            if (EnemySystem.isEnd())
+            {
+                game_over = true;
+                return;
+            }
+            //if all enemies were destroyed, GAMEOVER
+            if (EnemySystem.GetEnemies().Count == 0)
+            {
+                game_over = true;
+            }
         }
 
         //get GameObjects informations to draw on screen
@@ -102,11 +142,15 @@ namespace space_invaders
     {
         protected int x;
         protected int y;
+        protected int W;
+        protected int H;
 
-        public GameObject(int x, int y)
+        public GameObject(int x, int y, int W=0, int H=0)
         {
             this.x = x;
             this.y = y;
+            this.W = W;
+            this.H = H;
         }
 
         public void GetPos(out int x, out int y)
@@ -114,20 +158,58 @@ namespace space_invaders
             x = this.x;
             y = this.y;
         }
+
+        public void GetSize(out int W, out int H)
+        {
+            H = this.H;
+            W = this.W;
+        }
+
+        //check collision with a bounding box
+        public bool Collide(GameObject other)
+        {
+            int _x, _y, _W, _H;
+            other.GetPos(out _x, out _y);
+            other.GetPos(out _W, out _H);
+            bool collide = false;
+
+            if (x == _x && y == _y)
+            {
+                collide = true;
+            }
+
+            if (!collide && W > 0 && H > 0)
+            {
+                if ((_x >= x && _x <= x + W) || (x >= _x && x <= _x + _W))
+                {
+                    if ((_y >= y && _y <= y + H) || (y >= _y && y <= _y + _H))
+                    {
+                        collide = true;
+                    }
+                }
+            }
+
+            return collide;
+        }
     }
 
     class Player : GameObject
     {
-        int refresh_time;
-        int current_time;
-        int screenCols;
-        Bullet shoot;
+        private int refresh_time;
+        private int current_time;
+        private int screenCols;
+        private Bullet shoot;
+        private int bW, bH;
+        private int vel;
 
-        public Player(int x, int y, int screenCols, int refreshTime) : base(x, y)
+        public Player(int x, int y, int screenCols, int refreshTime, int bW=0, int bH=0, int vel=1) : base(x, y)
         {
             refresh_time = refreshTime;
             current_time = 0;
             this.screenCols = screenCols;
+            this.bW = bW;
+            this.bH = bH;
+            this.vel = vel;
         }
 
         public void Update(bool left, bool right, bool shoot)
@@ -135,44 +217,54 @@ namespace space_invaders
             current_time--;
             if (right && !left && x < screenCols)
             {
-                x++;
+                x+=vel;
             }
 
             if (left && !right && x > 0)
             {
-                x--;
+                x-=vel;
             }
 
             if (shoot && current_time <= 0)
             {
-                this.shoot = new Bullet(x,y-1,false,0);
+                this.shoot = new Bullet(x+bW,y-bH,bW,bH+1,bH+1);
                 current_time = refresh_time;
             }
         }
 
         public Bullet getShoot()
         {
-            return shoot;
+            Bullet b = shoot;
+            shoot = null;
+            return b;
         }
     }
 
     class Bullet : GameObject
     {
         private bool enemyBullet;
+        private int Vel;
 
-        public Bullet(int x, int y, bool enemy, int limit) : base(x,y)
+        public Bullet(int x, int y, bool enemy=false) : base(x,y)
         {
             enemyBullet = enemy;
+            Vel = 1;
+        }
+
+        public Bullet(int x, int y, int W, int H, int vel = 1, bool enemy=false) : base(x, y, W, H)
+        {
+            enemyBullet = enemy;
+            Vel = vel;
         }
 
         public void Update()
         {
             if (enemyBullet)
             {
-                y++;
+                y+=Vel;
             }
             else
-                y--;
+                y-=Vel;
         }
     }
      
@@ -182,8 +274,14 @@ namespace space_invaders
         private readonly int maxTimeShoot;
         private Random rdm;
 
-
         public Enemy(int x, int y, int _maxTimeShoot) : base(x,y)
+        {
+            maxTimeShoot = _maxTimeShoot;
+            rdm = new Random();
+            timeToShoot = rdm.Next(maxTimeShoot);
+        }
+
+        public Enemy(int x, int y, int W, int H, int _maxTimeShoot) : base(x, y, W, H)
         {
             maxTimeShoot = _maxTimeShoot;
             rdm = new Random();
@@ -211,8 +309,9 @@ namespace space_invaders
     class EnemyController
     {
         //enemies Info
-        private int nEnemies;
         private List<Enemy> Enemies;
+        private int W, H;
+        private int EnemyVel;
         //movement information
         private bool left;
         private bool down;
@@ -226,19 +325,43 @@ namespace space_invaders
             this.screenLines = screenLines;
             left = false;
             down = false;
-            nEnemies = 0;
             Enemies = new List<Enemy>();
+            W = 0;
+            H = 0;
 
             for (int i = 0; i < nLines; i++)
             {
                 for (int j = margin; j < screenCols - margin; j+=2)
                 {
-                    Enemies.Add(new Enemy(j, i, 20));
-                    nEnemies++;
+                    Enemies.Add(new Enemy(j, i, W, H, 20));
                 }
             }
 
             gotToBottom = false;
+            EnemyVel = 1;
+        }
+
+        public EnemyController(int nLines, int screenCols, int screenLines, int margin, int W, int H, int EnemyVel) : this(nLines, screenCols, screenLines, margin)
+        {
+            this.W = W;
+            this.H = H;
+            this.EnemyVel = EnemyVel;
+
+            this.screenCols = screenCols;
+            this.screenLines = screenLines;
+            left = false;
+            down = false;
+            Enemies = new List<Enemy>();
+            for (int i = 0; i < nLines; i += 1)
+            {
+                for (int j = margin; j < screenCols - margin; j += 2*W)
+                {
+                    Enemies.Add(new Enemy(j, i*H, W, H, 20));
+                }
+            }
+
+            gotToBottom = false;
+
         }
 
         public void Update()
@@ -252,13 +375,13 @@ namespace space_invaders
                 {
                     int x, y;
                     e.GetPos(out x, out y);
-                    if (x == 1 || x == screenCols-1)
+                    if (x <= W || x >= screenCols-W)
                     {
                         left = !left;
                         down = true;
                         break;
                     }
-                    if (y == screenLines-1)
+                    if (y == screenLines-H)
                     {
                         gotToBottom = true;
                     }
@@ -273,30 +396,24 @@ namespace space_invaders
             {
                 if (down)
                 {
-                    e.Move(0, 1);
+                    e.Move(0, H);
                 }
                 else if (left)
                 {
-                    e.Move(-1, 0);
+                    e.Move(-EnemyVel, 0);
                 }
                 else
                 {
-                    e.Move(1, 0);
+                    e.Move(EnemyVel, 0);
                 }
             }
         }
 
         public bool check_collisions(Bullet b)
         {
-            int bx, by;
-            b.GetPos(out bx, out by);
-
             foreach (Enemy e in Enemies)
             {
-                int ex, ey;
-                e.GetPos(out ex, out ey);
-
-                if (bx == ex && by == ey)
+                if (e.Collide(b))
                 {
                     Enemies.Remove(e);
                     return true;
