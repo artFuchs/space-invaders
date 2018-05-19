@@ -39,6 +39,10 @@ namespace space_invaders
             }
 
             GameOverLabel.Hide();
+
+            //sound ~ BGM.wav file is on the same folder as the application .exe
+            System.Media.SoundPlayer bgm = new System.Media.SoundPlayer("BGM.wav");
+            bgm.Play();
         }
 
         //Create assets to draw
