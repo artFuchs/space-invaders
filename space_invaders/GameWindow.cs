@@ -29,7 +29,7 @@ namespace space_invaders
             InitializeComponent();
             
             core.Size assetsSize = new core.Size(invader.Size.Width, invader.Size.Height);
-            core.Size screenSize = new core.Size(Size.Width, Size.Height - 32);
+            core.Size screenSize = new core.Size(Size.Width-32, Size.Height - 32);
             core.Size bulletSize = new core.Size(bullet.Size.Width, bullet.Size.Height);
             game = new GameInstance(screenSize, 3, 2 * assetsSize.GetW(), assetsSize, bulletSize, 5);
             int n = game.GetEnemies().Count;
@@ -38,7 +38,6 @@ namespace space_invaders
                 createEnemy(i);
             }
 
-            GameOverLabel.Text = "";
             GameOverLabel.Hide();
         }
 
@@ -119,6 +118,7 @@ namespace space_invaders
                     GameOverLabel.Text = "YOU WIN";
                 else
                     GameOverLabel.Text = "GAME OVER";
+                GameOverLabel.Left = (this.Width - GameOverLabel.Width) / 2;
                 return;
             }
             game.Update(goleft, goright, isPressed);
