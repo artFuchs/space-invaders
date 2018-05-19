@@ -14,7 +14,7 @@ namespace space_invaders
         [STAThread]
         static void Main()
         {
-            //sound ~ BGM.wave file is on the same folder as the application .exe
+            //sound ~ BGM.wav file is on the same folder as the application .exe
             System.Media.SoundPlayer bgm = new System.Media.SoundPlayer("BGM.wav");
             bgm.Play();
 
