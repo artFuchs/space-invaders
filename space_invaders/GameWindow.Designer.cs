@@ -83,6 +83,7 @@
             // 
             // bullet
             // 
+            this.bullet.BackColor = System.Drawing.Color.Transparent;
             this.bullet.Image = ((System.Drawing.Image)(resources.GetObject("bullet.Image")));
             this.bullet.Location = new System.Drawing.Point(593, 400);
             this.bullet.Name = "bullet";
