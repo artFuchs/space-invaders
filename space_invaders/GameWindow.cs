@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,8 +42,13 @@ namespace space_invaders
             GameOverLabel.Hide();
 
             //sound ~ BGM.wav file is on the same folder as the application .exe
-            System.Media.SoundPlayer bgm = new System.Media.SoundPlayer("BGM.wav");
-            bgm.Play();
+            string directory = AppDomain.CurrentDomain.BaseDirectory;
+            string fullpath = Path.Combine(directory, "BGM.wav");
+            if (File.Exists (fullpath))
+            {
+                System.Media.SoundPlayer bgm = new System.Media.SoundPlayer(fullpath);
+                bgm.Play();
+            } 
         }
 
         //Create assets to draw
