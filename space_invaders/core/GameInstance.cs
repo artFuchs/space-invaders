@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace space_invaders
+namespace space_invaders.core
 {
     class GameInstance
     {
         //screen_information
-        private int screenLines;
-        private int screenCols;
+        private Size screenSize;
 
         //ObjectControl
         private EnemyController EnemySystem;
@@ -21,39 +20,36 @@ namespace space_invaders
         private bool game_over;
 
         //assets information
-        private int W_base;
-        private int H_base;
-        private int H_bullet;
-        private int W_bullet;
+        private Size baseSize;
 
-        //Default Constructor
+        //Default Constructor - create a instance of the game where
         public GameInstance()
         {
-            screenLines = 20;
-            screenCols = 20;
-            EnemySystem = new EnemyController(2, this.screenCols, this.screenLines, 4);
-            player = new Player(screenCols / 2, screenLines - 1, screenCols, 3);
+            screenSize = new Size(20, 20);
+            EnemySystem = new EnemyController(2, screenSize, 4);
+            int SW = screenSize.GetW();
+            int SH = screenSize.GetH();
+            player = new Player(SW/2, SH-1, SW, 3);
             bullets = new List<Bullet>();
             game_over = false;
-            W_base = 0;
-            H_base = 0;
-            W_bullet = 0;
-            H_bullet = 0;
+            baseSize = new Size(0, 0);
         }
 
-        //Alternative Constructor
-        public GameInstance(int screenLines, int screenCols, int enemyLines, int margin, int assetsW=0, int assetsH=0, int bulletW = 0, int bulletH = 0, int playerVel = 1)
+        //Alternative Constructor - custon instance
+        public GameInstance(Size screenSize, int enemyLines, int margin, Size assetsSize, Size bulletSize = null, int playerVel = 1)
         {
-            this.screenLines = screenLines;
-            this.screenCols = screenCols;
-            EnemySystem = new EnemyController(enemyLines, this.screenCols, this.screenLines, margin, assetsW, assetsH, 5);
-            player = new Player(screenCols/2, screenLines-assetsH, screenCols, 20, bulletW, bulletH, playerVel);
+            this.screenSize = new Size(screenSize);
+            baseSize = new Size(assetsSize);
+            EnemySystem = new EnemyController(enemyLines, this.screenSize, margin, baseSize, 5);
+
+            int pX = screenSize.GetW()/2;
+            int pY = screenSize.GetH() - baseSize.GetH()*2;
+            int limW = screenSize.GetW() - baseSize.GetW();
+            player = new Player(pX, pY, limW, 10, baseSize, 5, bulletSize);
+
             bullets = new List<Bullet>();
             game_over = false;
-            W_base = assetsW;
-            H_base = assetsH;
-            W_bullet = bulletW;
-            H_bullet = bulletH;
+
         }
 
         public void Update(bool Left, bool Right, bool shoot)
@@ -83,7 +79,7 @@ namespace space_invaders
                 bool outS = false;
                 //check if bullet is out of screen
                 b.GetPos(out int x, out int y);
-                if (y > screenLines || y < 0)
+                if (y > screenSize.GetW() || y < 0)
                 {
                     to_remove.Add(b);
                     outS = true;
@@ -142,15 +138,16 @@ namespace space_invaders
     {
         protected int x;
         protected int y;
-        protected int W;
-        protected int H;
+        protected Size size;
 
-        public GameObject(int x, int y, int W=0, int H=0)
+        public GameObject(int x, int y, Size s = null)
         {
             this.x = x;
             this.y = y;
-            this.W = W;
-            this.H = H;
+            if (s == null)
+                size = new Size(0, 0);
+            else
+                size = new Size(s);
         }
 
         public void GetPos(out int x, out int y)
@@ -161,8 +158,13 @@ namespace space_invaders
 
         public void GetSize(out int W, out int H)
         {
-            H = this.H;
-            W = this.W;
+            H = size.GetH();
+            W = size.GetW();
+        }
+
+        public Size GetSize()
+        {
+            return new Size(size);
         }
 
         //check collision with a bounding box
@@ -177,6 +179,10 @@ namespace space_invaders
             {
                 collide = true;
             }
+
+
+            int W = size.GetW();
+            int H = size.GetH();
 
             if (!collide && W > 0 && H > 0)
             {
@@ -196,16 +202,18 @@ namespace space_invaders
         private int current_time;
         private int screenCols;
         private Bullet shoot;
-        private int bW, bH;
+        private Size bSize;
+        private Size size;
         private int vel;
 
-        public Player(int x, int y, int screenCols, int refreshTime, int bW=0, int bH=0, int vel=1) : base(x, y)
+        public Player(int x, int y, int screen_limit, int refreshTime, Size playerSize = null, int vel = 1, Size bSize = null) : base(x, y)
         {
             refresh_time = refreshTime;
             current_time = 0;
-            this.screenCols = screenCols;
-            this.bW = bW;
-            this.bH = bH;
+            screenCols = screen_limit;
+
+            size = new Size(playerSize);
+            this.bSize = new Size(bSize);
             this.vel = vel;
         }
 
@@ -224,7 +232,8 @@ namespace space_invaders
 
             if (shoot && current_time <= 0)
             {
-                this.shoot = new Bullet(x+bW,y-bH,bW,bH,bH+1);
+
+                this.shoot = new Bullet(x + size.GetW()/2 - bSize.GetW() , y - size.GetH(), bSize, bSize.GetH());
                 current_time = refresh_time;
             }
         }
@@ -248,7 +257,7 @@ namespace space_invaders
             Vel = 1;
         }
 
-        public Bullet(int x, int y, int W, int H, int vel = 1, bool enemy=false) : base(x, y, W, H)
+        public Bullet(int x, int y, Size size, int vel = 1, bool enemy=false) : base(x, y, size)
         {
             enemyBullet = enemy;
             Vel = vel;
@@ -278,7 +287,7 @@ namespace space_invaders
             timeToShoot = rdm.Next(maxTimeShoot);
         }
 
-        public Enemy(int x, int y, int W, int H, int _maxTimeShoot) : base(x, y, W, H)
+        public Enemy(int x, int y, Size size, int _maxTimeShoot) : base(x, y, size)
         {
             maxTimeShoot = _maxTimeShoot;
             rdm = new Random();
@@ -307,58 +316,60 @@ namespace space_invaders
     {
         //enemies Info
         private List<Enemy> Enemies;
-        private int W, H;
+        private Size EnemySize;
         private int EnemyVel;
         //movement information
         private bool left;
         private bool down;
         //screenInfo
-        private int screenCols, screenLines;
+        private Size screenSize;
         private bool gotToBottom;
 
-        public EnemyController(int nLines, int screenCols, int screenLines, int margin)
+        public EnemyController(int nLines, Size screenSize, int margin)
         {
-            this.screenCols = screenCols;
-            this.screenLines = screenLines;
-            left = false;
-            down = false;
+            this.screenSize = new Size(screenSize);
+            
             Enemies = new List<Enemy>();
-            W = 0;
-            H = 0;
+            EnemySize = new Size(0, 0);
 
             for (int i = 0; i < nLines; i++)
             {
-                for (int j = margin; j < screenCols - margin; j+=2)
+                for (int j = margin; j < screenSize.GetW() - margin; j+=2)
                 {
-                    Enemies.Add(new Enemy(j, i, W, H, 20));
+                    Enemies.Add(new Enemy(j, i, EnemySize, 20));
                 }
             }
 
+            left = false;
+            down = false;
             gotToBottom = false;
             EnemyVel = 1;
         }
 
-        public EnemyController(int nLines, int screenCols, int screenLines, int margin, int W, int H, int EnemyVel) : this(nLines, screenCols, screenLines, margin)
+        public EnemyController(int nLines, Size screenSize, int margin, Size EnemySize, int EnemyVel)
         {
-            this.W = W;
-            this.H = H;
-            this.EnemyVel = EnemyVel;
-
-            this.screenCols = screenCols;
-            this.screenLines = screenLines;
-            left = false;
-            down = false;
+            this.EnemySize = new Size(EnemySize);
+            this.screenSize = new Size(screenSize);
+            
             Enemies = new List<Enemy>();
+
+            int W = this.EnemySize.GetW();
+            int H = this.EnemySize.GetH();
+
             for (int i = 0; i < nLines; i += 1)
             {
-                for (int j = margin; j < screenCols - margin; j += 2*W)
+                for (int j = margin; j < screenSize.GetW() - margin; j += 2*W)
                 {
-                    Enemies.Add(new Enemy(j, i*H, W, H, 20));
+                    Enemies.Add(new Enemy(j, i*H, EnemySize, 20));
                 }
             }
 
-            gotToBottom = false;
+            this.EnemyVel = EnemyVel;
+            
 
+            left = false;
+            down = false;
+            gotToBottom = false;
         }
 
         public void Update()
@@ -372,13 +383,13 @@ namespace space_invaders
                 {
                     int x, y;
                     e.GetPos(out x, out y);
-                    if (x <= W || x >= screenCols-W)
+                    if (x <= EnemySize.GetW() || x >= screenSize.GetW()-EnemySize.GetW())
                     {
                         left = !left;
                         down = true;
                         break;
                     }
-                    if (y >= screenLines-H)
+                    if (y >= screenSize.GetH()-EnemySize.GetW()*2)
                     {
                         gotToBottom = true;
                     }
@@ -393,7 +404,7 @@ namespace space_invaders
             {
                 if (down)
                 {
-                    e.Move(0, H);
+                    e.Move(0, EnemySize.GetH());
                 }
                 else if (left)
                 {

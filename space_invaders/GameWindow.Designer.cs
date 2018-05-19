@@ -49,6 +49,7 @@
             // 
             // invader
             // 
+            this.invader.BackColor = System.Drawing.Color.Transparent;
             this.invader.Image = ((System.Drawing.Image)(resources.GetObject("invader.Image")));
             this.invader.Location = new System.Drawing.Point(0, 0);
             this.invader.Name = "invader";
@@ -70,8 +71,9 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(331, 458);
+            this.pictureBox1.Location = new System.Drawing.Point(324, 482);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(32, 24);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -92,14 +94,16 @@
             // 
             // GameOverLabel
             // 
-            this.GameOverLabel.AutoSize = true;
+            this.GameOverLabel.BackColor = System.Drawing.Color.Transparent;
+            this.GameOverLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GameOverLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GameOverLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.GameOverLabel.Location = new System.Drawing.Point(178, 191);
+            this.GameOverLabel.Location = new System.Drawing.Point(0, 0);
             this.GameOverLabel.Name = "GameOverLabel";
-            this.GameOverLabel.Size = new System.Drawing.Size(204, 73);
+            this.GameOverLabel.Size = new System.Drawing.Size(673, 602);
             this.GameOverLabel.TabIndex = 5;
-            this.GameOverLabel.Text = "label1";
+            this.GameOverLabel.Text = "Game Over";
+            this.GameOverLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // GameWindow
             // 
@@ -108,12 +112,12 @@
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(673, 518);
-            this.Controls.Add(this.GameOverLabel);
+            this.ClientSize = new System.Drawing.Size(673, 602);
             this.Controls.Add(this.bullet);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.invader);
+            this.Controls.Add(this.GameOverLabel);
             this.DoubleBuffered = true;
             this.Name = "GameWindow";
             this.Text = "Space Invaders";

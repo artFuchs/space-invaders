@@ -7,22 +7,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using space_invaders.core;
 
 namespace space_invaders
 {
     public partial class GameWindow : Form
     {
+        
+
         GameInstance game;
         bool goleft;
         bool goright;
         bool isPressed;
 
+
         public GameWindow()
         {
+            
             this.KeyPreview = true;
 
             InitializeComponent();
-            game = new GameInstance(500, 640, 2, 64, 32, 24, 10, 24, 10);
+            
+            core.Size assetsSize = new core.Size(invader.Size.Width, invader.Size.Height);
+            core.Size screenSize = new core.Size(Size.Width, Size.Height - 32);
+            core.Size bulletSize = new core.Size(bullet.Size.Width, bullet.Size.Height);
+            game = new GameInstance(screenSize, 3, 2 * assetsSize.GetW(), assetsSize, bulletSize, 5);
             int n = game.GetEnemies().Count;
             for (int i=1; i<n; i++)
             {
@@ -30,6 +39,7 @@ namespace space_invaders
             }
 
             GameOverLabel.Text = "";
+            GameOverLabel.Hide();
         }
 
         //Create assets to draw
@@ -42,7 +52,8 @@ namespace space_invaders
                 Location = new Point(-100,-100),
                 Image = invader.Image,
                 Tag = invader.Tag,
-                SizeMode = invader.SizeMode
+                SizeMode = invader.SizeMode,
+                BackColor = invader.BackColor,
             };
             this.Controls.Add(picture);
         }
@@ -54,10 +65,11 @@ namespace space_invaders
             {
                 Name = "bulletClone" + count.ToString(),
                 Size = bullet.Size,
-                Location = new Point(Size.Width*x, Size.Height*y),
+                Location = new Point(Size.Width * x, Size.Height * y),
                 Image = bullet.Image,
                 Tag = bullet.Tag,
-                SizeMode = bullet.SizeMode
+                SizeMode = bullet.SizeMode,
+                BackColor = bullet.BackColor,
             };
             this.Controls.Add(picture);
         }
@@ -102,6 +114,7 @@ namespace space_invaders
         {
             if (game.isGameOver())
             {
+                GameOverLabel.Show();
                 if (game.GetEnemies().Count==0)
                     GameOverLabel.Text = "YOU WIN";
                 else
