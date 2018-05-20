@@ -101,11 +101,11 @@
             this.Ready_Go_Label.BackColor = System.Drawing.Color.Transparent;
             this.Ready_Go_Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Ready_Go_Label.ForeColor = System.Drawing.SystemColors.Control;
-            this.Ready_Go_Label.Location = new System.Drawing.Point(47, 154);
+            this.Ready_Go_Label.Location = new System.Drawing.Point(32, 163);
             this.Ready_Go_Label.Name = "Ready_Go_Label";
-            this.Ready_Go_Label.Size = new System.Drawing.Size(601, 73);
+            this.Ready_Go_Label.Size = new System.Drawing.Size(612, 73);
             this.Ready_Go_Label.TabIndex = 6;
-            this.Ready_Go_Label.Text = "Press Enter To start";
+            this.Ready_Go_Label.Text = "Press Enter To Start";
             this.Ready_Go_Label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // GameWindow
