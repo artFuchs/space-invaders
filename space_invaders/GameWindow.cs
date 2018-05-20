@@ -28,7 +28,16 @@ namespace space_invaders
             this.KeyPreview = true;
 
             InitializeComponent();
-            
+
+            //sound ~ BGM.wav file is on the same folder as the application .exe
+            string directory = AppDomain.CurrentDomain.BaseDirectory;
+            string fullpath = Path.Combine(directory, "BGM.wav");
+            if (File.Exists(fullpath))
+            {
+                System.Media.SoundPlayer bgm = new System.Media.SoundPlayer(fullpath);
+                bgm.PlayLooping();
+            }
+
             core.Size assetsSize = new core.Size(invader.Size.Width, invader.Size.Height);
             core.Size screenSize = new core.Size(Size.Width-32, Size.Height - 32);
             core.Size bulletSize = new core.Size(bullet.Size.Width, bullet.Size.Height);
@@ -40,15 +49,11 @@ namespace space_invaders
             }
 
             GameOverLabel.Hide();
-
-            //sound ~ BGM.wav file is on the same folder as the application .exe
-            string directory = AppDomain.CurrentDomain.BaseDirectory;
-            string fullpath = Path.Combine(directory, "BGM.wav");
-            if (File.Exists (fullpath))
-            {
-                System.Media.SoundPlayer bgm = new System.Media.SoundPlayer(fullpath);
-                bgm.Play();
-            } 
+            Ready_Go_Label.Left = (Size.Width - Ready_Go_Label.Width) / 2;
+            
+            invader.Left = -invader.Width;
+            bullet.Left = -bullet.Width;
+            
         }
 
         //Create assets to draw
@@ -114,6 +119,11 @@ namespace space_invaders
             if (e.KeyCode == Keys.Space && !isPressed)
             {
                 isPressed = true;
+            }
+            if (e.KeyCode == Keys.Enter && Ready_Go_Label.Visible)
+            {
+                Ready_Go_Label.Hide();
+                timer1.Enabled = true;
             }
         }
 
