@@ -1,3 +1,5 @@
-Para compilar o código deve-se utilizar do Visual Studio, pois é utilizado a library Forms, entre outras, que fazem parte do pacote da IDE do VS.
+﻿Para compilar o código deve-se utilizar do Visual Studio, pois é utilizado a library Forms, entre outras, que fazem parte do pacote da IDE do VS.
 
-Caso não possua o Visual Studio, acesse o site: https://www.visualstudio.com e baixe a versão Free (Community 2017). Também é necessário instalar o Microsoft .NET.
+Caso não possua o Visual Studio, acesse o site: https://www.visualstudio.com e baixe a versão Free (Community 2017)
+
+Instale-o com o pacote de "Desenvolvimento para desktop com .NET"
