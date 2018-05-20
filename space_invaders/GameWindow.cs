@@ -47,7 +47,7 @@ namespace space_invaders
             if (File.Exists (fullpath))
             {
                 System.Media.SoundPlayer bgm = new System.Media.SoundPlayer(fullpath);
-                bgm.Play();
+                bgm.PlayLooping();
             } 
         }
 
