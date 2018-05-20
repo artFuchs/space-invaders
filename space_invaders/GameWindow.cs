@@ -32,7 +32,7 @@ namespace space_invaders
             core.Size assetsSize = new core.Size(invader.Size.Width, invader.Size.Height);
             core.Size screenSize = new core.Size(Size.Width-32, Size.Height - 32);
             core.Size bulletSize = new core.Size(bullet.Size.Width, bullet.Size.Height);
-            game = new GameInstance(screenSize, 3, 2 * assetsSize.GetW(), assetsSize, bulletSize, 5);
+            game = new GameInstance(screenSize, 3, 2 * assetsSize.W, assetsSize, bulletSize, 5);
             int n = game.GetEnemies().Count;
             for (int i=1; i<n; i++)
             {

@@ -8,8 +8,8 @@ namespace space_invaders.core
 {
     class Size
     {
-        private int W;
-        private int H;
+        public int W { get; }
+        public int H { get; }
 
         public Size(int W, int H)
         {
@@ -26,19 +26,9 @@ namespace space_invaders.core
             }
             else
             {
-                H = source.GetH();
-                W = source.GetW();
+                H = source.H;
+                W = source.W;
             }
-        }
-
-        public int GetW()
-        {
-            return W;
-        }
-
-        public int GetH()
-        {
-            return H;
         }
     }
 }

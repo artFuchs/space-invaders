@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameWindow));
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.invader = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bullet = new System.Windows.Forms.PictureBox();
             this.GameOverLabel = new System.Windows.Forms.Label();
@@ -58,16 +57,6 @@
             this.invader.TabIndex = 0;
             this.invader.TabStop = false;
             this.invader.Tag = "invader";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.SystemColors.Control;
-            this.label2.Location = new System.Drawing.Point(753, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "label2";
             // 
             // pictureBox1
             // 
@@ -113,10 +102,9 @@
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.ClientSize = new System.Drawing.Size(673, 602);
+            this.ClientSize = new System.Drawing.Size(801, 602);
             this.Controls.Add(this.bullet);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.invader);
             this.Controls.Add(this.GameOverLabel);
             this.DoubleBuffered = true;
@@ -135,7 +123,6 @@
         #endregion
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.PictureBox invader;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox bullet;
         private System.Windows.Forms.Label GameOverLabel;

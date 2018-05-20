@@ -28,9 +28,9 @@ namespace space_invaders.core
             baseSize = new Size(assetsSize);
             EnemySystem = new EnemyController(enemyLines, this.screenSize, margin, baseSize, 5);
 
-            int pX = screenSize.GetW()/2;
-            int pY = screenSize.GetH() - baseSize.GetH()*2;
-            int limW = screenSize.GetW() - baseSize.GetW();
+            int pX = screenSize.W/2;
+            int pY = screenSize.H - baseSize.H*2;
+            int limW = screenSize.W - baseSize.W;
             player = new Player(pX, pY, limW, 10, baseSize, 5, bulletSize);
 
             bullets = new List<Bullet>();
@@ -65,7 +65,7 @@ namespace space_invaders.core
                 bool outS = false;
                 //check if bullet is out of screen
                 b.GetPos(out int x, out int y);
-                if (y > screenSize.GetW() || y < 0)
+                if (y > screenSize.W || y < 0)
                 {
                     to_remove.Add(b);
                     outS = true;
@@ -144,8 +144,8 @@ namespace space_invaders.core
 
         public void GetSize(out int W, out int H)
         {
-            H = size.GetH();
-            W = size.GetW();
+            H = size.H;
+            W = size.W;
         }
 
         public Size GetSize()
@@ -167,8 +167,8 @@ namespace space_invaders.core
             }
 
 
-            int W = size.GetW();
-            int H = size.GetH();
+            int W = size.W;
+            int H = size.H;
 
             if (!collide && W > 0 && H > 0)
             {
@@ -218,7 +218,7 @@ namespace space_invaders.core
             if (shoot && current_time <= 0)
             {
 
-                this.shoot = new Bullet(x + (size.GetW() - bSize.GetW())/2 , y - size.GetH(), bSize, bSize.GetH());
+                this.shoot = new Bullet(x + (size.W - bSize.W)/2 , y - size.H, bSize, bSize.H);
                 current_time = refresh_time;
             }
         }
@@ -319,7 +319,7 @@ namespace space_invaders.core
 
             for (int i = 0; i < nLines; i++)
             {
-                for (int j = margin; j < screenSize.GetW() - margin; j+=2)
+                for (int j = margin; j < screenSize.W - margin; j+=2)
                 {
                     Enemies.Add(new Enemy(j, i, EnemySize, 20));
                 }
@@ -338,12 +338,12 @@ namespace space_invaders.core
             
             Enemies = new List<Enemy>();
 
-            int W = this.EnemySize.GetW();
-            int H = this.EnemySize.GetH();
+            int W = this.EnemySize.W;
+            int H = this.EnemySize.H;
 
             for (int i = 0; i < nLines; i += 1)
             {
-                for (int j = margin; j < screenSize.GetW() - margin; j += 2*W)
+                for (int j = margin; j < screenSize.W - margin; j += 2*W)
                 {
                     Enemies.Add(new Enemy(j, i*H, EnemySize, 20));
                 }
@@ -368,13 +368,13 @@ namespace space_invaders.core
                 {
                     int x, y;
                     e.GetPos(out x, out y);
-                    if (x <= EnemySize.GetW() || x >= screenSize.GetW()-EnemySize.GetW())
+                    if (x <= EnemySize.W || x >= screenSize.W-EnemySize.W)
                     {
                         left = !left;
                         down = true;
                         break;
                     }
-                    if (y >= screenSize.GetH()-EnemySize.GetW()*2)
+                    if (y >= screenSize.H-EnemySize.W*2)
                     {
                         gotToBottom = true;
                     }
@@ -389,7 +389,7 @@ namespace space_invaders.core
             {
                 if (down)
                 {
-                    e.Move(0, EnemySize.GetH());
+                    e.Move(0, EnemySize.H);
                 }
                 else if (left)
                 {
