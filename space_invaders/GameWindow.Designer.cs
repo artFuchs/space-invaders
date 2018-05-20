@@ -36,6 +36,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bullet = new System.Windows.Forms.PictureBox();
             this.GameOverLabel = new System.Windows.Forms.Label();
+            this.Ready_Go_Label = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.invader)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bullet)).BeginInit();
@@ -106,6 +107,19 @@
             this.GameOverLabel.Text = "Game Over";
             this.GameOverLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // Ready_Go_Label
+            // 
+            this.Ready_Go_Label.AutoSize = true;
+            this.Ready_Go_Label.BackColor = System.Drawing.Color.Transparent;
+            this.Ready_Go_Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Ready_Go_Label.ForeColor = System.Drawing.SystemColors.Control;
+            this.Ready_Go_Label.Location = new System.Drawing.Point(201, 153);
+            this.Ready_Go_Label.Name = "Ready_Go_Label";
+            this.Ready_Go_Label.Size = new System.Drawing.Size(254, 73);
+            this.Ready_Go_Label.TabIndex = 6;
+            this.Ready_Go_Label.Text = "Ready?";
+            this.Ready_Go_Label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // GameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -114,6 +128,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(673, 602);
+            this.Controls.Add(this.Ready_Go_Label);
             this.Controls.Add(this.bullet);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
@@ -140,6 +155,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox bullet;
         private System.Windows.Forms.Label GameOverLabel;
+        private System.Windows.Forms.Label Ready_Go_Label;
     }
 }
 

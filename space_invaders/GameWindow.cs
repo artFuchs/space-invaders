@@ -28,7 +28,26 @@ namespace space_invaders
             this.KeyPreview = true;
 
             InitializeComponent();
-            
+
+            //sound ~ BGM.wav file is on the same folder as the application .exe
+            string directory = AppDomain.CurrentDomain.BaseDirectory;
+            string fullpath = Path.Combine(directory, "BGM.wav");
+            if (File.Exists(fullpath))
+            {
+                System.Media.SoundPlayer bgm = new System.Media.SoundPlayer(fullpath);
+                bgm.PlayLooping();
+            }
+
+
+            //show ready message for 3 seconds
+            // TIMER
+            Ready_Go_Label.Text = "Go!";
+
+            //show go message for 1,5 seconds
+            // TIMER
+            Ready_Go_Label.Hide();
+
+
             core.Size assetsSize = new core.Size(invader.Size.Width, invader.Size.Height);
             core.Size screenSize = new core.Size(Size.Width-32, Size.Height - 32);
             core.Size bulletSize = new core.Size(bullet.Size.Width, bullet.Size.Height);
@@ -41,14 +60,6 @@ namespace space_invaders
 
             GameOverLabel.Hide();
 
-            //sound ~ BGM.wav file is on the same folder as the application .exe
-            string directory = AppDomain.CurrentDomain.BaseDirectory;
-            string fullpath = Path.Combine(directory, "BGM.wav");
-            if (File.Exists (fullpath))
-            {
-                System.Media.SoundPlayer bgm = new System.Media.SoundPlayer(fullpath);
-                bgm.PlayLooping();
-            } 
         }
 
         //Create assets to draw
