@@ -8,30 +8,43 @@ namespace space_invaders.core
 {
     class GameInstance
     {
-        //screen_information
+        // screen information
+        public enum SizeOf{
+            SCREEN = 0,
+            ASSETS,
+            BULLETS
+        }
         private Size screenSize;
 
-        //ObjectControl
+        // object control
         private EnemyController EnemySystem;
         private Player player;
         private List<Bullet> bullets;
 
-        //gameStatus
+        // gameStatus
         private bool game_over;
 
-        //assets information
+        // assets information
         private Size baseSize;
 
-        public GameInstance(Size screenSize, int enemyLines, int margin, Size assetsSize, Size bulletSize = null, int playerVel = 1)
+        public GameInstance(Dictionary<SizeOf, Size> Sizes, int enemyLines, int margin, int playerVel = 1)
         {
-            this.screenSize = new Size(screenSize);
-            baseSize = new Size(assetsSize);
-            EnemySystem = new EnemyController(enemyLines, this.screenSize, margin, baseSize, 5);
+
+            this.screenSize = new Size(Sizes[SizeOf.SCREEN]);
+            baseSize = new Size(Sizes[SizeOf.ASSETS]);
+            Size bulletSize = new Size (Sizes[SizeOf.BULLETS]);
+
+            EnemySystem = new EnemyController(enemyLines, this.screenSize, margin, baseSize, 2, bulletSize, true);
+            foreach (Enemy e in EnemySystem.GetEnemies())
+            {
+                e.Fire += new Enemy.ShootHandler(HearFire);
+            }
 
             int pX = screenSize.W/2;
             int pY = screenSize.H - baseSize.H*2;
             int limW = screenSize.W - baseSize.W;
             player = new Player(pX, pY, limW, 10, baseSize, 5, bulletSize);
+            player.Fire += new Player.ShootHandler(HearFire);
 
             bullets = new List<Bullet>();
             game_over = false;
@@ -50,14 +63,7 @@ namespace space_invaders.core
             {
                 b.Update();
             }
-            if (shoot)
-            {
-                Bullet b = player.getShoot();
-                if (b!= null)
-                    bullets.Add(b);
-            }
-
-
+            
             List<Bullet> to_remove = new List<Bullet>();
             //check collisions and remove bullets
             foreach (Bullet b in bullets)
@@ -95,6 +101,11 @@ namespace space_invaders.core
             {
                 game_over = true;
             }
+        }
+
+        private void HearFire(Bullet b, EventArgs e)
+        {
+            bullets.Add(b);
         }
 
         //get GameObjects informations to draw on screen
@@ -191,6 +202,11 @@ namespace space_invaders.core
         private Size bSize;
         private int vel;
 
+        public delegate void ShootHandler(Bullet b, EventArgs e);
+        private EventArgs e = null;
+        public event ShootHandler Fire;
+
+
         public Player(int x, int y, int screen_limit, int refreshTime, Size playerSize = null, int vel = 1, Size bSize = null) : base(x, y)
         {
             refresh_time = refreshTime;
@@ -217,8 +233,10 @@ namespace space_invaders.core
 
             if (shoot && current_time <= 0)
             {
-
-                this.shoot = new Bullet(x + (size.W - bSize.W)/2 , y - size.H, bSize, bSize.H);
+                if (Fire != null)
+                {
+                    Fire(new Bullet(x + (size.W - bSize.W) / 2, y - size.H, bSize, bSize.H), e);
+                }
                 current_time = refresh_time;
             }
         }
@@ -233,24 +251,24 @@ namespace space_invaders.core
 
     class Bullet : GameObject
     {
-        private bool enemyBullet;
+        public bool EnemyBullet { get; }
         private int Vel;
 
         public Bullet(int x, int y, bool enemy=false) : base(x,y)
         {
-            enemyBullet = enemy;
+            EnemyBullet = enemy;
             Vel = 1;
         }
 
         public Bullet(int x, int y, Size size, int vel = 1, bool enemy=false) : base(x, y, size)
         {
-            enemyBullet = enemy;
+            EnemyBullet = enemy;
             Vel = vel;
         }
 
         public void Update()
         {
-            if (enemyBullet)
+            if (EnemyBullet)
             {
                 y+=Vel;
             }
@@ -261,22 +279,30 @@ namespace space_invaders.core
      
     class Enemy: GameObject
     {
+
         private int timeToShoot;
         private readonly int maxTimeShoot;
         private Random rdm;
+        private Size bSize;
+
+        public delegate void ShootHandler(Bullet b, EventArgs e);
+        private EventArgs e = null;
+        public event ShootHandler Fire;
 
         public Enemy(int x, int y, int _maxTimeShoot) : base(x,y)
         {
             maxTimeShoot = _maxTimeShoot;
             rdm = new Random();
             timeToShoot = rdm.Next(maxTimeShoot);
+            bSize = new Size(0,0);
         }
 
-        public Enemy(int x, int y, Size size, int _maxTimeShoot) : base(x, y, size)
+        public Enemy(int x, int y, Size size, int _maxTimeShoot, Size BulletSize) : base(x, y, size)
         {
             maxTimeShoot = _maxTimeShoot;
-            rdm = new Random();
+            rdm = new Random(x+y);
             timeToShoot = rdm.Next(maxTimeShoot);
+            bSize = new Size(BulletSize);
         }
 
         public void Move(int _x, int _y)
@@ -290,7 +316,10 @@ namespace space_invaders.core
 
         private void Shoot()
         {
-            //shoot!!!!!
+            if (Fire!=null)
+            {
+                Fire(new Bullet(x + (size.W - bSize.W) / 2, y + size.H, bSize, bSize.H, true), e);
+            }
             timeToShoot = rdm.Next(maxTimeShoot);
         }
     }
@@ -303,6 +332,8 @@ namespace space_invaders.core
         private List<Enemy> Enemies;
         private Size EnemySize;
         private int EnemyVel;
+        private bool EnemyChangeVel;
+        private int nLines;
         //movement information
         private bool left;
         private bool down;
@@ -316,12 +347,12 @@ namespace space_invaders.core
             
             Enemies = new List<Enemy>();
             EnemySize = new Size(0, 0);
-
+            this.nLines = nLines;
             for (int i = 0; i < nLines; i++)
             {
                 for (int j = margin; j < screenSize.W - margin; j+=2)
                 {
-                    Enemies.Add(new Enemy(j, i, EnemySize, 20));
+                    Enemies.Add(new Enemy(j, i, EnemySize, 100, new Size(0,0)));
                 }
             }
 
@@ -331,11 +362,12 @@ namespace space_invaders.core
             EnemyVel = 1;
         }
 
-        public EnemyController(int nLines, Size screenSize, int margin, Size EnemySize, int EnemyVel)
+        public EnemyController(int nLines, Size screenSize, int margin, Size EnemySize, int EnemyVel, Size bulletSize, bool EnemyChangeVel = false)
         {
             this.EnemySize = new Size(EnemySize);
             this.screenSize = new Size(screenSize);
-            
+            this.nLines = nLines;
+
             Enemies = new List<Enemy>();
 
             int W = this.EnemySize.W;
@@ -345,11 +377,12 @@ namespace space_invaders.core
             {
                 for (int j = margin; j < screenSize.W - margin; j += 2*W)
                 {
-                    Enemies.Add(new Enemy(j, i*H, EnemySize, 20));
+                    Enemies.Add(new Enemy(j, i*H, EnemySize, 20, bulletSize));
                 }
             }
 
             this.EnemyVel = EnemyVel;
+            this.EnemyChangeVel = EnemyChangeVel;
             
 
             left = false;
@@ -404,11 +437,21 @@ namespace space_invaders.core
 
         public bool check_collisions(Bullet b)
         {
+            if (b.EnemyBullet)
+            {
+                return false;
+            }
             foreach (Enemy e in Enemies)
             {
                 if (e.Collide(b))
                 {
                     Enemies.Remove(e);
+                    if (EnemyChangeVel)
+                    {
+                        if (Enemies.Count > 3)
+                            EnemyVel = screenSize.W / (Enemies.Count * EnemySize.W / nLines);
+
+                    }
                     return true;
                 }
             }
@@ -418,7 +461,7 @@ namespace space_invaders.core
 
         public List<Enemy> GetEnemies()
         {
-            return this.Enemies;
+            return Enemies;
         }
 
         public bool isEnd()

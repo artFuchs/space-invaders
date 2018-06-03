@@ -38,10 +38,11 @@ namespace space_invaders
                 bgm.PlayLooping();
             }
 
-            core.Size assetsSize = new core.Size(invader.Size.Width, invader.Size.Height);
-            core.Size screenSize = new core.Size(Size.Width-32, Size.Height - 32);
-            core.Size bulletSize = new core.Size(bullet.Size.Width, bullet.Size.Height);
-            game = new GameInstance(screenSize, 3, 2 * assetsSize.W, assetsSize, bulletSize, 5);
+            Dictionary<GameInstance.SizeOf, core.Size> dictSizes = new Dictionary<GameInstance.SizeOf, core.Size>();
+            dictSizes[GameInstance.SizeOf.ASSETS] = new core.Size(invader.Size.Width, invader.Size.Height);
+            dictSizes[GameInstance.SizeOf.SCREEN] = new core.Size(Size.Width-32, Size.Height - 32);
+            dictSizes[GameInstance.SizeOf.BULLETS] = new core.Size(bullet.Size.Width, bullet.Size.Height);
+            game = new GameInstance(dictSizes, 3, 2 * invader.Size.Width, 5);
             int n = game.GetEnemies().Count;
             for (int i=1; i<n; i++)
             {
