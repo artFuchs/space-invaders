@@ -27,7 +27,7 @@ namespace space_invaders.core
         // assets information
         private Size baseSize;
 
-        public GameInstance(Dictionary<SizeOf, Size> Sizes, int enemyLines, int margin, int playerVel = 1)
+        public GameInstance(Dictionary<SizeOf, Size> Sizes, int enemyLines, int margin, int playerVel = 1, int EnemyFireDelay = 30)
         {
 
             this.screenSize = new Size(Sizes[SizeOf.SCREEN]);
@@ -377,7 +377,7 @@ namespace space_invaders.core
             {
                 for (int j = margin; j < screenSize.W - margin; j += 2*W)
                 {
-                    Enemies.Add(new Enemy(j, i*H, EnemySize, 20, bulletSize));
+                    Enemies.Add(new Enemy(j, i*H, EnemySize, 500, bulletSize));
                 }
             }
 
