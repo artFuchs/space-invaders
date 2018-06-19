@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="core_func\GameInstance.cs" />
+    <Compile Include="core_func\utils.cs" />
     <Compile Include="core\utils.cs" />
     <Compile Include="core\GameInstance.cs" />
     <Compile Include="GameWindow.cs">
