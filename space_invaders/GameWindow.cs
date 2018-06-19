@@ -38,24 +38,27 @@ namespace space_invaders
                 bgm.PlayLooping();
             }
 
-            Dictionary<GameInstance.SizeOf, core.Size> dictSizes = new Dictionary<GameInstance.SizeOf, core.Size>();
-            dictSizes[GameInstance.SizeOf.ASSETS] = new core.Size(invader.Size.Width, invader.Size.Height);
-            dictSizes[GameInstance.SizeOf.SCREEN] = new core.Size(Size.Width-32, Size.Height - 32);
-            dictSizes[GameInstance.SizeOf.BULLETS] = new core.Size(bullet.Size.Width, bullet.Size.Height);
-            int timeFire = timer1.Interval * 30;
-            game = new GameInstance(dictSizes, 3, 2 * invader.Size.Width, 5, timeFire);
-            int n = game.GetEnemies().Count;
-            for (int i=1; i<n; i++)
-            {
-                createEnemy(i);
-            }
-
             GameOverLabel.Hide();
             Ready_Go_Label.Left = (Size.Width - Ready_Go_Label.Width) / 2;
             
             invader.Left = -invader.Width;
             bullet.Left = -bullet.Width;
             
+        }
+
+        private void setGame()
+        {
+            Dictionary<GameInstance.SizeOf, core.Size> dictSizes = new Dictionary<GameInstance.SizeOf, core.Size>();
+            dictSizes[GameInstance.SizeOf.ASSETS] = new core.Size(invader.Size.Width, invader.Size.Height);
+            dictSizes[GameInstance.SizeOf.SCREEN] = new core.Size(Size.Width - 32, Size.Height - 32);
+            dictSizes[GameInstance.SizeOf.BULLETS] = new core.Size(bullet.Size.Width, bullet.Size.Height);
+            int timeFire = timer1.Interval * 30;
+            game = new GameInstance(dictSizes, 3, 2 * invader.Size.Width, 5, timeFire);
+            int n = game.GetEnemies().Count;
+            for (int i = 1; i < n; i++)
+            {
+                createEnemy(i);
+            }
         }
 
         //Create assets to draw
@@ -122,9 +125,11 @@ namespace space_invaders
             {
                 isPressed = true;
             }
-            if (e.KeyCode == Keys.Enter && Ready_Go_Label.Visible)
+            if (e.KeyCode == Keys.Enter && (Ready_Go_Label.Visible || GameOverLabel.Visible))
             {
                 Ready_Go_Label.Hide();
+                GameOverLabel.Hide();
+                setGame();
                 timer1.Enabled = true;
             }
         }
@@ -136,11 +141,14 @@ namespace space_invaders
             if (game.isGameOver())
             {
                 GameOverLabel.Show();
+                Ready_Go_Label.Show();
                 if (game.GetEnemies().Count==0)
                     GameOverLabel.Text = "YOU WIN";
                 else
                     GameOverLabel.Text = "GAME OVER";
                 GameOverLabel.Left = (this.Width - GameOverLabel.Width) / 2;
+                Ready_Go_Label.Text = "Press Enter to Restart";
+                Ready_Go_Label.Left = (this.Width - Ready_Go_Label.Width) / 2;
                 return;
             }
             game.Update(goleft, goright, isPressed);
@@ -201,6 +209,8 @@ namespace space_invaders
                 createBullet(Bcount, x, y);
                 Bcount++;
             }
+
+            labelLives.Text = "lives: " + game.getLives().ToString();
         }
     }
 }

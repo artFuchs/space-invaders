@@ -23,6 +23,8 @@ namespace space_invaders.core
 
         // gameStatus
         private bool game_over;
+        private int lives;
+        private int wait_time;
 
         // assets information
         private Size baseSize;
@@ -49,6 +51,8 @@ namespace space_invaders.core
             bullets = new List<Bullet>();
             game_over = false;
 
+            lives = 3;
+            wait_time = 0;
         }
 
         public void Update(bool Left, bool Right, bool shoot)
@@ -57,11 +61,18 @@ namespace space_invaders.core
                 return;
 
             //update objects
-            EnemySystem.Update();
-            player.Update(Left, Right, shoot);
             foreach (Bullet b in bullets)
             {
                 b.Update();
+            }
+            if (wait_time <= 0)
+            {
+                EnemySystem.Update();
+                player.Update(Left, Right, shoot);
+            }
+            else
+            {
+                wait_time--;
             }
             
             List<Bullet> to_remove = new List<Bullet>();
@@ -79,10 +90,23 @@ namespace space_invaders.core
                 //if not, check if it collide with some enemies
                 if (!outS)
                 {
-                    if (EnemySystem.check_collisions(b))
+                    if (b.EnemyBullet && wait_time <= 0)
+                    {
+                        if (player.Collide(b))
+                        {
+                            // lose one life
+                            lives--;
+                            // set wait time
+                            wait_time = 30;
+                            // reset player position
+                            player.resetPos();
+                        }
+                    }
+                    else if (EnemySystem.check_collisions(b))
                     {
                         to_remove.Add(b);
                     }
+
                 } 
             }
             foreach (Bullet b in to_remove)
@@ -91,7 +115,7 @@ namespace space_invaders.core
             }
 
             //if enemies reached the botton of the screen, GAMEOVER
-            if (EnemySystem.isEnd())
+            if (EnemySystem.isEnd() || lives <= 0)
             {
                 game_over = true;
                 return;
@@ -128,6 +152,11 @@ namespace space_invaders.core
         public bool isGameOver()
         {
             return game_over;
+        }
+
+        public int getLives()
+        {
+            return lives;
         }
     }
 
@@ -201,6 +230,7 @@ namespace space_invaders.core
         private Bullet shoot;
         private Size bSize;
         private int vel;
+        private int x_ini;
 
         public delegate void ShootHandler(Bullet b, EventArgs e);
         private EventArgs e = null;
@@ -209,6 +239,7 @@ namespace space_invaders.core
 
         public Player(int x, int y, int screen_limit, int refreshTime, Size playerSize = null, int vel = 1, Size bSize = null) : base(x, y)
         {
+            x_ini = x;
             refresh_time = refreshTime;
             current_time = 0;
             screenCols = screen_limit;
@@ -246,6 +277,11 @@ namespace space_invaders.core
             Bullet b = shoot;
             shoot = null;
             return b;
+        }
+
+        public void resetPos()
+        {
+            x = x_ini;
         }
     }
 

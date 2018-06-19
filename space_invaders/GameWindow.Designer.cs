@@ -36,6 +36,7 @@
             this.bullet = new System.Windows.Forms.PictureBox();
             this.GameOverLabel = new System.Windows.Forms.Label();
             this.Ready_Go_Label = new System.Windows.Forms.Label();
+            this.labelLives = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.invader)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playerImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bullet)).BeginInit();
@@ -88,7 +89,7 @@
             this.GameOverLabel.BackColor = System.Drawing.Color.Transparent;
             this.GameOverLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.GameOverLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.GameOverLabel.Location = new System.Drawing.Point(154, 236);
+            this.GameOverLabel.Location = new System.Drawing.Point(154, 159);
             this.GameOverLabel.Name = "GameOverLabel";
             this.GameOverLabel.Size = new System.Drawing.Size(363, 73);
             this.GameOverLabel.TabIndex = 5;
@@ -99,14 +100,24 @@
             // 
             this.Ready_Go_Label.AutoSize = true;
             this.Ready_Go_Label.BackColor = System.Drawing.Color.Transparent;
-            this.Ready_Go_Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Ready_Go_Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Ready_Go_Label.ForeColor = System.Drawing.SystemColors.Control;
-            this.Ready_Go_Label.Location = new System.Drawing.Point(32, 163);
+            this.Ready_Go_Label.Location = new System.Drawing.Point(95, 242);
             this.Ready_Go_Label.Name = "Ready_Go_Label";
-            this.Ready_Go_Label.Size = new System.Drawing.Size(612, 73);
+            this.Ready_Go_Label.Size = new System.Drawing.Size(458, 55);
             this.Ready_Go_Label.TabIndex = 6;
             this.Ready_Go_Label.Text = "Press Enter To Start";
             this.Ready_Go_Label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelLives
+            // 
+            this.labelLives.AutoSize = true;
+            this.labelLives.ForeColor = System.Drawing.SystemColors.Control;
+            this.labelLives.Location = new System.Drawing.Point(4, 580);
+            this.labelLives.Name = "labelLives";
+            this.labelLives.Size = new System.Drawing.Size(28, 13);
+            this.labelLives.TabIndex = 7;
+            this.labelLives.Text = "lives";
             // 
             // GameWindow
             // 
@@ -116,6 +127,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(673, 602);
+            this.Controls.Add(this.labelLives);
             this.Controls.Add(this.Ready_Go_Label);
             this.Controls.Add(this.bullet);
             this.Controls.Add(this.playerImage);
@@ -142,6 +154,7 @@
         private System.Windows.Forms.PictureBox bullet;
         private System.Windows.Forms.Label GameOverLabel;
         private System.Windows.Forms.Label Ready_Go_Label;
+        private System.Windows.Forms.Label labelLives;
     }
 }
 
