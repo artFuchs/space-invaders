@@ -272,12 +272,6 @@ namespace space_invaders.core
             }
         }
 
-        public Bullet getShoot()
-        {
-            Bullet b = shoot;
-            shoot = null;
-            return b;
-        }
 
         public void resetPos()
         {
